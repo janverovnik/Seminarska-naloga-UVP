@@ -13,16 +13,16 @@ def get_html_to_file(url, directory, ime_datoteke):
         f.write(niz)
     return
 
-def dobi_rank_po_sto(n, directory):
+def dobi_rank_po_sto(n, directory, datum): # datum oblike XXXX-XX-XX (npr. 2024-07-31) kot string
     for i in range(n):
         offset = str(i * 100)
         offset_plus_ena = str(i * 100 + 1)
         offset_plus_sto = str((i + 1) * 100)
-        pcs_url = f"https://www.procyclingstats.com/rankings.php?date=2024-07-31&nation=&age=&zage=&page=smallerorequal&team=&offset={offset}&active=&filter=Filter&p=me&s=all-time"
+        pcs_url = f"https://www.procyclingstats.com/rankings.php?date={datum}&nation=&age=&zage=&page=smallerorequal&team=&offset={offset}&active=&filter=Filter&p=me&s=all-time"
         get_html_to_file(pcs_url, directory, f"{offset_plus_ena}-{offset_plus_sto}.html")
     return 
 
-# dobi_rank_po_sto(10, "Podatki")
+# dobi_rank_po_sto(10, "Podatki", "2024-07-31")
 
 
 def izlusci_kolesar_url(ime_datoteke):

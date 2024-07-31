@@ -1,2 +1,2 @@
 # Seminarska-naloga-Prog1
-S to seminarsko nalogo hočem pokazati znanje pythona ter obenem analizirati rezultate in lastnosti najbolših kolesarjev vseh časov.
+S to seminarsko nalogo hočem pokazati znanje pythona ter obenem analizirati rezultate in lastnosti najbolših kolesarjev vseh časov. Za seminarsko nalogo bom uporabil stran https://www.procyclingstats.com/index.php, ki deluje kot najbolj uporabna in popularna baza podatkov za kolesarstvo.

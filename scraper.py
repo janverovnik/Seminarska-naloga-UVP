@@ -104,7 +104,10 @@ def stevilo_zmag_spomenik(niz):
 def kolesar_scraper(niz): 
     alltime = re.search(r'All time</a></div><div class=" rnk"  >(\d+)</div>', niz)
     ime = re.search(r'<title>(.+)</title>', niz)
-    drzava = re.search(r'"nation/.+">(.+)</a><br />(<span>)?<b>', niz)
+    if re.search(r'Place of birth', niz) == None and re.search(r'Weight', niz) == None and re.search(r'Height', niz) == None:
+        drzava = re.search(r'"nation/.+">(.+)</a><br />(<span>)?<div class="pps">', niz)
+    else:
+        drzava = re.search(r'"nation/.+">(.+)</a><br />(<span>)?<b>', niz)
     oneday = re.search(r'<div class="bg green" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
     GC = re.search(r'<div class="bg red" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
     TT = re.search(r'<div class="bg blue" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
@@ -123,10 +126,9 @@ def kolesar_scraper(niz):
     etapne_zmage = str(int(st_zmag.group(1)) - int(struktura_zmag.group(1)) - int(struktura_zmag.group(2)) - int(struktura_zmag.group(3)))
     return {"ime": ime.group(1)[:-1], "drzava": drzava.group(1), "rang": alltime.group(1) + ".", "sezone": st_sezon, "t_enodnevne": oneday.group(2), "t_GC": GC.group(2),"t_kronometer": TT.group(2), "t_sprint": sprint.group(2), "t_gore": climb.group(2), "t_hribi": hills.group(2), "zmage": st_zmag.group(1), "etapne": etapne_zmage, "GC": struktura_zmag.group(1), "enodnevne": struktura_zmag.group(2), "kronometer": struktura_zmag.group(3), "grand tour zac.": st_zac_grand_tour.group(1), "grand tour zmage": st_zmag_grand_tour,  "spomeniki zac.": st_zac_spomenik.group(1), "spomeniki zmage": st_zmag_spomenik}
 
-#niz = requests.get("https://www.procyclingstats.com/rider/sean-kelly").text
-#print(kolesar_scraper(niz))
-#print(stevilo_zmag_grand_tour(niz))
-#print(stevilo_zmag_spomenik(niz))
+# niz = requests.get("https://www.procyclingstats.com/rider/tadej-pogacar").text
+# print(kolesar_scraper(niz))
+
 
 def dobi_kolesar_podatke(n, directory1): # n, directory1 morata biti enaka kot n, directory pri dobi_rank_po_sto
     glavni_list = [] # ta je zdele messy
@@ -145,7 +147,7 @@ def dobi_kolesar_podatke(n, directory1): # n, directory1 morata biti enaka kot n
     return glavni_list       
     
 
-# print(dobi_kolesar_podatke(1, "Lestvica"))
+# print(dobi_kolesar_podatke(10, "Lestvica"))
 
 
             

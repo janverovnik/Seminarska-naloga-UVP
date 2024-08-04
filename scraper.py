@@ -130,7 +130,7 @@ def kolesar_scraper(niz):
 # print(kolesar_scraper(niz))
 
 
-def dobi_kolesar_podatke(n, directory1): # n, directory1 morata biti enaka kot n, directory pri dobi_rank_po_sto
+def dobi_list_podatkov(n, directory1): # n, directory1 morata biti enaka kot n, directory pri dobi_rank_po_sto
     glavni_list = [] # ta je zdele messy
     for i in range(n):
         prvi_del = str(i * 100 + 1)

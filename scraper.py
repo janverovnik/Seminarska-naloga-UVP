@@ -145,7 +145,7 @@ def dobi_kolesar_podatke(n, directory1): # n, directory1 morata biti enaka kot n
     return glavni_list       
     
 
-print(dobi_kolesar_podatke(1, "Lestvica"))
+# print(dobi_kolesar_podatke(1, "Lestvica"))
 
 
             

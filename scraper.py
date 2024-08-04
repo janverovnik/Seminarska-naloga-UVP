@@ -22,7 +22,7 @@ def dobi_rank_po_sto(n, directory, datum): # datum oblike XXXX-XX-XX kot string 
         get_html_to_file(pcs_url, directory, f"{offset_plus_ena}-{offset_plus_sto}.html")
     return 
 
-# dobi_rank_po_sto(10, "Lestvica", "2024-08-02")
+# dobi_rank_po_sto(1, "Lestvica", "2024-08-04")
 
 
 def izlusci_kolesar_url(ime_datoteke):
@@ -104,27 +104,27 @@ def stevilo_zmag_spomenik(niz):
 def kolesar_scraper(niz): 
     alltime = re.search(r'All time</a></div><div class=" rnk"  >(\d+)</div>', niz)
     ime = re.search(r'<title>(.+)</title>', niz)
-    drzava = re.search(r'"nation/.+">(.+)</a><br /><span><b>Weight', niz)
-    oneday = re.search(r'<div class="bg green" style="width: 67.89063531898%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
-    GC = re.search(r'<div class="bg red" style="width: 83.793422269185%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
-    TT = re.search(r'<div class="bg blue" style="width: 33.456610751552%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
-    sprint = re.search(r'<div class="bg orange" style="width: 2.9982829216748%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
-    climb = re.search(r'<div class="bg purple" style="width: 100%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
-    hills = re.search(r'<div class="bg pink" style="width: 42.24012679963%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    drzava = re.search(r'"nation/.+">(.+)</a><br />(<span>)?<b>', niz)
+    oneday = re.search(r'<div class="bg green" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    GC = re.search(r'<div class="bg red" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    TT = re.search(r'<div class="bg blue" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    sprint = re.search(r'<div class="bg orange" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    climb = re.search(r'<div class="bg purple" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
+    hills = re.search(r'<div class="bg pink" style="width: \d+(\.\d+)?%; height: 100%;  "></div></div><div class="pnt">(\d+)', niz)
     st_zmag = re.search(r'<ul class="rider-kpi"  style=" "><li class="" ><div class=" nr"  >(\d+)</div>', niz)
     struktura_zmag = re.search(r'Wins</a></div><div class=" info fs11"  >GC \((\d+)\)</div><div class=" info fs11"  >Oneday races \((\d+)\)</div><div class=" info fs11"  >ITT \((\d+)\)</div>', niz)
-    st_zac_grand_tour = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href=".+">Grand tours', niz)
+    st_zac_grand_tour = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/grand-tour-starts">Grand tours', niz)
     st_zmag_grand_tour = stevilo_zmag_grand_tour(niz)
 #   struktura_grand_tour = re.search(r'Grand tours</a></div><div class=" info fs11"  >tour \((\d+)\) giro \((\d+)\) vuelta\((\d+)\)', niz)
-    st_zac_spomenik = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href=".+">Classics', niz)
+    st_zac_spomenik = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/top-classic-results">Classics', niz)
     st_zmag_spomenik = stevilo_zmag_spomenik(niz)
 #   struktura_zac_klasik = re.search(r'Classics</a></div><div class=" info fs11"  >RBX\((\d+)\)</div><div class=" info fs11"  >MSR\((\d+)\)</div><div class=" info fs11"  >RVV\((\d+)\)</div><div class=" info fs11"  >LBL\((\d+)\)</div><div class=" info fs11"  >LOM\((\d+)\)', niz)
     st_sezon = str(len([i for i in re.finditer(r'<tr ><td class="season  " >\d+</td><td class="bar  " >', niz)]))
     etapne_zmage = str(int(st_zmag.group(1)) - int(struktura_zmag.group(1)) - int(struktura_zmag.group(2)) - int(struktura_zmag.group(3)))
-    return {"ime": ime.group(1)[:-1], "drzava": drzava.group(1), "rang": alltime.group(1) + ".", "sezone": st_sezon, "t_enodnevne": oneday.group(1), "t_GC": GC.group(1),"t_kronometer": TT.group(1), "t_sprint": sprint.group(1), "t_gore": climb.group(1), "t_hribi": hills.group(1), "zmage": st_zmag.group(1), "etapne": etapne_zmage, "GC": struktura_zmag.group(1), "enodnevne": struktura_zmag.group(2), "kronometer": struktura_zmag.group(3), "grand tour zac.": st_zac_grand_tour.group(1), "grand tour zmage": st_zmag_grand_tour,  "spomeniki zac.": st_zac_spomenik.group(1), "spomeniki zmage": st_zmag_spomenik}
+    return {"ime": ime.group(1)[:-1], "drzava": drzava.group(1), "rang": alltime.group(1) + ".", "sezone": st_sezon, "t_enodnevne": oneday.group(2), "t_GC": GC.group(2),"t_kronometer": TT.group(2), "t_sprint": sprint.group(2), "t_gore": climb.group(2), "t_hribi": hills.group(2), "zmage": st_zmag.group(1), "etapne": etapne_zmage, "GC": struktura_zmag.group(1), "enodnevne": struktura_zmag.group(2), "kronometer": struktura_zmag.group(3), "grand tour zac.": st_zac_grand_tour.group(1), "grand tour zmage": st_zmag_grand_tour,  "spomeniki zac.": st_zac_spomenik.group(1), "spomeniki zmage": st_zmag_spomenik}
 
-niz = requests.get("https://www.procyclingstats.com/rider/tadej-pogacar").text
-print(kolesar_scraper(niz))
+#niz = requests.get("https://www.procyclingstats.com/rider/sean-kelly").text
+#print(kolesar_scraper(niz))
 #print(stevilo_zmag_grand_tour(niz))
 #print(stevilo_zmag_spomenik(niz))
 
@@ -141,11 +141,11 @@ def dobi_kolesar_podatke(n, directory1): # n, directory1 morata biti enaka kot n
             except requests.exceptions.RequestException:
                 print("Preverite povezavo in poskusite znova.")
             glavni_list.append(kolesar_scraper(niz))
-#           print(glavni_list)
-    return        
+#            print(glavni_list)
+    return glavni_list       
     
 
-# dobi_kolesar_podatke(10, "Lestvica")
+print(dobi_kolesar_podatke(1, "Lestvica"))
 
 
             

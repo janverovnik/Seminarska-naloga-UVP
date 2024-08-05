@@ -3,6 +3,8 @@ import re
 import os
 
 def get_html_to_file(url, directory, ime_datoteke):
+    # osnovna funkcija, ki naloži hmtl datoteko, ki jo ustvari v poljubni mapi. Tudi update-a file z novimi podatki (tako da prejšnjo izbriše :>).
+    os.remove(directory + "/" + ime_datoteke)
     try:
         niz = requests.get(url).text
     except requests.exceptions.RequestException:
@@ -14,6 +16,8 @@ def get_html_to_file(url, directory, ime_datoteke):
     return
 
 def dobi_rank_po_sto(n, directory, datum): # datum oblike XXXX-XX-XX kot string (npr. "2024-07-31") 
+    # Stran alltime ranking na PCS-ju izpiše kolesarje po 100, kar pa spremenimo z {offset}.
+    # Tako ta funkcija ustvari n datotek, vsaka s 100 kolesarji, v poljubno mapo ob poljubnem datumu (lestvica se nenehoma spreminja).
     for i in range(n):
         offset = str(i * 100)
         offset_plus_ena = str(i * 100 + 1)
@@ -22,10 +26,8 @@ def dobi_rank_po_sto(n, directory, datum): # datum oblike XXXX-XX-XX kot string 
         get_html_to_file(pcs_url, directory, f"{offset_plus_ena}-{offset_plus_sto}.html")
     return 
 
-# dobi_rank_po_sto(1, "Lestvica", "2024-08-04")
-
-
 def izlusci_kolesar_url(ime_datoteke):
+    # Funkcija vzame eno izmed datotek s 100 kolesarji in izlušči rep url-a za njihovo PCS stran
     with open(ime_datoteke, "r", encoding="utf-8") as f:
         niz = f.read()
     vzorec = r'<a    href="(rider/.*?)">'
@@ -37,8 +39,9 @@ def izlusci_kolesar_url(ime_datoteke):
         stevec += 1
     return list1
 
-# print(izlusci_kolesar_url("Lestvica/1-100.html"))   
+   
 def stevilo_zmag_grand_tour(niz):
+    # Vzame url strani posameznega kolesarja in prešteje zmage na grand tourih (malo kompliciran sistem imajo na PCS).
     zmage_posameznih_tour = len(re.findall(r'">&nbsp; <span class="shirt st4 w14"></span></div><div><span class="blue">GC</span> <a href="race/tour-de-france/\d+/gc">', niz))
     zmage_posameznih_giro = len(re.findall(r'">&nbsp; <span class="shirt st4 w14"></span></div><div><span class="blue">GC</span> <a href="race/giro-d-italia/\d+/gc">', niz))
     zmage_posameznih_vuelta = len(re.findall(r'">&nbsp; <span class="shirt st4 w14"></span></div><div><span class="blue">GC</span> <a href="race/vuelta-a-espana/\d+/gc">', niz))
@@ -61,6 +64,7 @@ def stevilo_zmag_grand_tour(niz):
     return str(int(tour) + int(giro) + int(vuelta) + zmage_posameznih_gt)
 
 def stevilo_zmag_spomenik(niz):
+    # Vzame url strani posameznega kolesarja in prešteje zmage na spomenikih (malo kompliciran sistem imajo na PCS).
     RBX_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/paris-roubaix/\d+/result">', niz))
     MSR_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/milano-sanremo/\d+/result">', niz))
     RVV_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/ronde-van-vlaanderen/\d+/result">', niz))
@@ -101,7 +105,8 @@ def stevilo_zmag_spomenik(niz):
 
 
 
-def kolesar_scraper(niz): 
+def kolesar_scraper(niz):
+    # Vzame source code PCS strani kolesarja v obliki niza in zapiše pomembne podatke v slovar (ime, drzava, zmage, grand touri, ...).
     alltime = re.search(r'All time</a></div><div class=" rnk"  >(\d+)</div>', niz)
     ime = re.search(r'<title>(.+)</title>', niz)
     if re.search(r'Place of birth', niz) == None and re.search(r'Weight', niz) == None and re.search(r'Height', niz) == None:
@@ -118,36 +123,33 @@ def kolesar_scraper(niz):
     struktura_zmag = re.search(r'Wins</a></div><div class=" info fs11"  >GC \((\d+)\)</div><div class=" info fs11"  >Oneday races \((\d+)\)</div><div class=" info fs11"  >ITT \((\d+)\)</div>', niz)
     st_zac_grand_tour = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/grand-tour-starts">Grand tours', niz)
     st_zmag_grand_tour = stevilo_zmag_grand_tour(niz)
-#   struktura_grand_tour = re.search(r'Grand tours</a></div><div class=" info fs11"  >tour \((\d+)\) giro \((\d+)\) vuelta\((\d+)\)', niz)
     st_zac_spomenik = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/top-classic-results">Classics', niz)
     st_zmag_spomenik = stevilo_zmag_spomenik(niz)
-#   struktura_zac_klasik = re.search(r'Classics</a></div><div class=" info fs11"  >RBX\((\d+)\)</div><div class=" info fs11"  >MSR\((\d+)\)</div><div class=" info fs11"  >RVV\((\d+)\)</div><div class=" info fs11"  >LBL\((\d+)\)</div><div class=" info fs11"  >LOM\((\d+)\)', niz)
     st_sezon = str(len([i for i in re.finditer(r'<tr ><td class="season  " >\d+</td><td class="bar  " >', niz)]))
-    etapne_zmage = str(int(st_zmag.group(1)) - int(struktura_zmag.group(1)) - int(struktura_zmag.group(2)) - int(struktura_zmag.group(3)))
+    etapne_zmage = str(int(st_zmag.group(1)) - int(struktura_zmag.group(1)) - int(struktura_zmag.group(2)))
     return {"ime": ime.group(1)[:-1], "drzava": drzava.group(1), "rang": alltime.group(1) + ".", "sezone": st_sezon, "t_enodnevne": oneday.group(2), "t_GC": GC.group(2),"t_kronometer": TT.group(2), "t_sprint": sprint.group(2), "t_gore": climb.group(2), "t_hribi": hills.group(2), "zmage": st_zmag.group(1), "etapne": etapne_zmage, "GC": struktura_zmag.group(1), "enodnevne": struktura_zmag.group(2), "kronometer": struktura_zmag.group(3), "grand tour zac.": st_zac_grand_tour.group(1), "grand tour zmage": st_zmag_grand_tour,  "spomeniki zac.": st_zac_spomenik.group(1), "spomeniki zmage": st_zmag_spomenik}
 
-# niz = requests.get("https://www.procyclingstats.com/rider/tadej-pogacar").text
-# print(kolesar_scraper(niz))
 
 
-def dobi_list_podatkov(n, directory1): # n, directory1 morata biti enaka kot n, directory pri dobi_rank_po_sto
-    glavni_list = [] # ta je zdele messy
+
+def dobi_list_podatkov(n, directory): # n, directory morata biti enaka kot n, directory pri dobi_rank_po_sto
+    # Vzame n * 100 kolesarjev vseh časov in izlušči pomembne podatke v obliki sloverjev v listu.
+    # Ta lahko traja par minutk. (get a coffee :>)
+    glavni_list = [] 
     for i in range(n):
         prvi_del = str(i * 100 + 1)
         drugi_del = str((i + 1) * 100)
-        directory2 = f"{prvi_del}-{drugi_del}"
-        list1 = izlusci_kolesar_url(f"{directory1}/{prvi_del}-{drugi_del}.html")
+        list1 = izlusci_kolesar_url(f"{directory}/{prvi_del}-{drugi_del}.html")
         for url in list1:
             try:
                 niz = requests.get("https://www.procyclingstats.com/" + url).text
             except requests.exceptions.RequestException:
                 print("Preverite povezavo in poskusite znova.")
             glavni_list.append(kolesar_scraper(niz))
-#            print(glavni_list)
     return glavni_list       
     
 
-# print(dobi_kolesar_podatke(10, "Lestvica"))
+
 
 
             

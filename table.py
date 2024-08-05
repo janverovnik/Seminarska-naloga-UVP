@@ -5,10 +5,11 @@ import csv
 from scraper import kolesar_scraper
 
 
-def podatki_v_csv(directory, filename, glavni_list):
+def podatki_v_csv(directory, ime_datoteke, glavni_list):
+    os.remove(directory + "/" + ime_datoteke)
     fieldnames = list((glavni_list[0]).keys())
     os.makedirs(directory, exist_ok=True)
-    path = os.path.join(directory, filename)
+    path = os.path.join(directory, ime_datoteke)
     with open(path, 'w', encoding='utf-8', newline='') as f:
         w = csv.DictWriter(f, fieldnames=fieldnames)
         w.writeheader()

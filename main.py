@@ -1,4 +1,4 @@
-datum = "2024-08-05" # datum oblike XXXX-XX-XX
+datum = "" # datum oblike XXXX-XX-XX
 
 
 import re

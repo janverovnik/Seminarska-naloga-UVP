@@ -1,4 +1,4 @@
-datum = "" # datum oblike XXXX-XX-XX
+datum = "2024-08-06" # datum oblike XXXX-XX-XX; leto-mesec-dan
 
 
 import re

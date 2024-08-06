@@ -75,7 +75,7 @@ def stevilo_zmag_spomenik(niz):
     RBX_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/paris-roubaix/\d+/result">', niz))
     MSR_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/milano-sanremo/\d+/result">', niz))
     RVV_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/ronde-van-vlaanderen/\d+/result">', niz))
-    LBL_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/liege-bestogne-liege/\d+/result">', niz))
+    LBL_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/liege-bastogne-liege/\d+/result">', niz))
     LOM_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/il-lombardia/\d+/result">', niz))
     posamezni = RBX_pos + MSR_pos + RVV_pos + LBL_pos + LOM_pos
     RBX = re.search(r'(\d+)x</b>&nbsp;</div><div><span class="blue"></span> <a href="race/paris-roubaix/\d+/result">', niz)

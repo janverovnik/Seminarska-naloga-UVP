@@ -45,7 +45,7 @@ def izlusci_kolesar_url(ime_datoteke):
     return list1
 
 
-niz = requests.get("https://www.procyclingstats.com/rider/tadej-pogacar").text
+
 def stevilo_zmag_grand_tour(niz):
     # Vzame url strani posameznega kolesarja in prešteje zmage na grand tourih (malo kompliciran sistem imajo na PCS).
     zmage_posameznih_tour = len(re.findall(r'">&nbsp; <span class="shirt st4 w14"></span></div><div><span class="blue">GC</span> <a href="race/tour-de-france/\d+/gc">', niz))
@@ -70,7 +70,7 @@ def stevilo_zmag_grand_tour(niz):
     return int(tour) + int(giro) + int(vuelta) + zmage_posameznih_gt
 
 
-def stevilo_zmag_spomenik(niz):
+def stevilo_zmag_spomeniki(niz):
     # Vzame url strani posameznega kolesarja in prešteje zmage na spomenikih (malo kompliciran sistem imajo na PCS).
     RBX_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/paris-roubaix/\d+/result">', niz))
     MSR_pos = len(re.findall(r'">&nbsp; </div><div><span class="blue"></span> <a href="race/milano-sanremo/\d+/result">', niz))
@@ -126,7 +126,7 @@ def kolesar_scraper(niz):
     st_zac_grand_tour = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/grand-tour-starts">Grand tours', niz)
     st_zmag_grand_tour = stevilo_zmag_grand_tour(niz)
     st_zac_spomenik = re.search(r'<li class="" ><div class=" nr"  >(\d+)</div><div class=" title"  ><a    href="rider/.+/statistics/top-classic-results">Classics', niz)
-    st_zmag_spomenik = stevilo_zmag_spomenik(niz)
+    st_zmag_spomenik = stevilo_zmag_spomeniki(niz)
     st_sezon = len([i for i in re.finditer(r'<tr ><td class="season  " >\d+</td><td class="bar  " >', niz)])
     etapne_zmage = int(st_zmag.group(1)) - int(struktura_zmag.group(1)) - int(struktura_zmag.group(2))
     return {"ime": ime.group(1)[:-1], "drzava": drzava.group(1), "rang": int(alltime.group(1)), "t_alltime": "" ,"sezone": st_sezon, "t_enodnevne": int(oneday.group(2)), "t_GC": int(GC.group(2)),"t_kronometer": int(TT.group(2)), "t_sprint": int(sprint.group(2)), "t_gore": int(climb.group(2)), "t_hribi": int(hills.group(2)), "zmage": int(st_zmag.group(1)), "etapne": etapne_zmage, "GC": int(struktura_zmag.group(1)), "enodnevne": int(struktura_zmag.group(2)), "kronometer": int(struktura_zmag.group(3)), "grand tour zac.": int(st_zac_grand_tour.group(1)), "grand tour zmage": st_zmag_grand_tour,  "spomeniki zac.": int(st_zac_spomenik.group(1)), "spomeniki zmage": st_zmag_spomenik}
